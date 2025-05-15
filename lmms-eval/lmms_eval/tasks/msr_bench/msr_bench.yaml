@@ -1,0 +1,65 @@
+
+dataset_path: sihany/MMSI-Bench
+
+task: "msr_bench"
+dataset_kwargs:
+  token: True
+test_split: train
+output_type: generate_until
+doc_to_visual: !function utils.msr_doc_to_visual
+doc_to_text: !function utils.msr_doc_to_text
+
+doc_to_target: "answer"
+process_results: !function utils.msr_process_results
+  
+lmms_eval_specific_kwargs:
+  default:
+    pre_prompt: ""
+    post_prompt: "\nAnswer with the option's letter from the given choices directly. Enclose the option's letter within ``."
+    
+generation_kwargs:
+  max_new_tokens: 2048
+  temperature: 0
+  do_sample: False
+
+
+metric_list:
+  - metric: 位置关系 object-object
+    aggregation: !function utils.msr_aggregate_results 
+    higher_is_better: true
+  - metric: 位置关系 cam-object
+    aggregation: !function utils.msr_aggregate_results 
+    higher_is_better: true
+  - metric: 位置关系 cam-cam
+    aggregation: !function utils.msr_aggregate_results 
+    higher_is_better: true
+  - metric: 位置关系 object-scene
+    aggregation: !function utils.msr_aggregate_results 
+    higher_is_better: true
+  - metric: 位置关系 cam-scene
+    aggregation: !function utils.msr_aggregate_results 
+    higher_is_better: true
+  - metric: 位置关系 scene-scene
+    aggregation: !function utils.msr_aggregate_results 
+    higher_is_better: true
+  - metric: 几何属性 measurement
+    aggregation: !function utils.msr_aggregate_results 
+    higher_is_better: true
+  - metric: 几何属性 shape
+    aggregation: !function utils.msr_aggregate_results 
+    higher_is_better: true
+  - metric: 运动感知 object
+    aggregation: !function utils.msr_aggregate_results 
+    higher_is_better: true
+  - metric: 运动感知 camera
+    aggregation: !function utils.msr_aggregate_results 
+    higher_is_better: true
+  - metric: 多步推理
+    aggregation: !function utils.msr_aggregate_results 
+    higher_is_better: true
+  - metric: average
+    aggregation: !function utils.msr_aggregate_results 
+    higher_is_better: true
+
+metadata:
+  - version: 0.0
